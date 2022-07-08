@@ -4,6 +4,8 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Core;
 using TestBackendTask;
+using TestBackendTask.Endpoints;
+using TestBackendTask.Endpoints.Abstractions;
 
 var host = CreateHostBuilder(args).Build();
 host.Services.GetService<HttpServer>().Start();
@@ -28,7 +30,12 @@ static IHostBuilder CreateHostBuilder(string[] args)
                                   }
                                   httpSection.Bind(options);
                               });
+                              
                               services.AddSingleton<HttpServer>();
+                              
+                              services.AddTransient<Endpoint, NonPrimitiveObjectEndpoint>(); //TODO: endpoint discovery?
+                              services.AddTransient<Endpoint, PrimitiveObjectEndpoint>();
+                              
                               services.AddScoped<ILogger, Logger>(_ => new LoggerConfiguration()
                                                                          .WriteTo.Console()
                                                                          .CreateLogger());

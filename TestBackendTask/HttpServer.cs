@@ -1,18 +1,20 @@
 ﻿using System.Net;
-using System.Text;
 using Microsoft.Extensions.Options;
 using Serilog;
+using TestBackendTask.Endpoints.Abstractions;
 
 namespace TestBackendTask;
 
 public class HttpServer
 {
+    private const string LocalhostServerUrl = "http://localhost:{0}/";
+
     private readonly HttpListener _listener;
     private readonly HttpOptions _options;
     private readonly ILogger _logger;
-    private const string LocalhostServerUrl = "http://localhost:{0}/";
+    private readonly IEnumerable<Endpoint> _endpoints;
 
-    public HttpServer(IOptions<HttpOptions> options, ILogger logger)
+    public HttpServer(IOptions<HttpOptions> options, ILogger logger, IEnumerable<Endpoint> endpoints)
     {
         if(!HttpListener.IsSupported)
         {
@@ -23,6 +25,7 @@ public class HttpServer
         _listener = new HttpListener();
         _options = options.Value;
         _logger = logger;
+        _endpoints = endpoints;
     }
 
     public void Start()
@@ -57,9 +60,17 @@ public class HttpServer
         _logger.Information("Request starting {HttpMethod} {HttpUrl}",
                             context.Request.HttpMethod, context.Request.Url);
 
-        context.Response.StatusCode = (int)HttpStatusCode.OK;
-        context.Response.OutputStream.Write(Encoding.UTF8.GetBytes("test response"));
-        context.Response.Close();
+        var selectedEndpoint = _endpoints.FirstOrDefault(x => x.Method == context.Request.HttpMethod &&
+                                                              x.Path == context.Request.RawUrl);
+        if(selectedEndpoint is null)
+        {
+            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+            context.Response.Close();
+        }
+        else
+        {
+            selectedEndpoint.Execute(context);
+        }
 
         _logger.Information("Request finished {HttpMethod} {HttpUrl} - {ResponseStatusCode}",
                             context.Request.HttpMethod, context.Request.Url, context.Response.StatusCode);
