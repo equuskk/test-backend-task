@@ -1,3 +1,38 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Serilog;
+using Serilog.Core;
+using TestBackendTask;
 
-Console.WriteLine("Hello, World!");
+var host = CreateHostBuilder(args).Build();
+host.Services.GetService<HttpServer>().Start();
+Console.ReadKey(); //TODO: fix server cancellation
+
+static IHostBuilder CreateHostBuilder(string[] args)
+{
+    var hostBuilder = Host.CreateDefaultBuilder(args)
+                          .ConfigureAppConfiguration((_, builder) =>
+                          {
+                              builder.SetBasePath(Directory.GetCurrentDirectory());
+                          })
+                          .ConfigureServices((context, services) =>
+                          {
+                              services.Configure<HttpOptions>(options =>
+                              {
+                                  var httpSection = context.Configuration.GetSection(HttpOptions.SectionName);
+                                  if(!httpSection.Exists())
+                                  {
+                                      throw new ArgumentNullException(nameof(httpSection),
+                                                                      $"Add '{HttpOptions.SectionName}' section to setting");
+                                  }
+                                  httpSection.Bind(options);
+                              });
+                              services.AddSingleton<HttpServer>();
+                              services.AddScoped<ILogger, Logger>(_ => new LoggerConfiguration()
+                                                                         .WriteTo.Console()
+                                                                         .CreateLogger());
+                          });
+
+    return hostBuilder;
+}
