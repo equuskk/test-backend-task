@@ -54,27 +54,30 @@ public class HttpServer
             return;
         }
 
-        var context = _listener.EndGetContext(result);
-
-        //TODO: track request time
-        _logger.Information("Request starting {HttpMethod} {HttpUrl}",
-                            context.Request.HttpMethod, context.Request.Url);
-
-        var selectedEndpoint = _endpoints.FirstOrDefault(x => x.Method == context.Request.HttpMethod &&
-                                                              x.Path == context.Request.RawUrl);
-        if(selectedEndpoint is null)
+        //TODO: think about it
+        Task.Factory.StartNew(() =>
         {
-            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-            context.Response.Close();
-        }
-        else
-        {
-            selectedEndpoint.Execute(context);
-        }
+            var context = _listener.EndGetContext(result);
 
-        _logger.Information("Request finished {HttpMethod} {HttpUrl} - {ResponseStatusCode}",
-                            context.Request.HttpMethod, context.Request.Url, context.Response.StatusCode);
+            //TODO: track request time
+            _logger.Information("Request starting {HttpMethod} {HttpUrl}",
+                                context.Request.HttpMethod, context.Request.Url);
 
+            var selectedEndpoint = _endpoints.FirstOrDefault(x => x.Method == context.Request.HttpMethod &&
+                                                                  x.Path == context.Request.RawUrl);
+            if(selectedEndpoint is null)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                context.Response.Close();
+            }
+            else
+            {
+                selectedEndpoint.Execute(context);
+            }
+
+            _logger.Information("Request finished {HttpMethod} {HttpUrl} - {ResponseStatusCode}",
+                                context.Request.HttpMethod, context.Request.Url, context.Response.StatusCode);
+        });
         Receive();
     }
 }
