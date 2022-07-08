@@ -18,6 +18,8 @@ public abstract class BaseEndpoint
     public abstract void Send(int statusCode, object? response);
     public abstract void Handle(HttpListenerRequest request);
 
+    public abstract T? GetDataFromBody<T>() where T : class;
+
     public void SendOk(object? response)
     {
         Send(200, response);

@@ -35,4 +35,9 @@ public class Endpoint : BaseEndpoint
     {
         throw new NotImplementedException();
     }
+
+    public override T? GetDataFromBody<T>() where T : class
+    {
+        return _context.Request.HasEntityBody ? JsonSerializer.Deserialize<T>(_context.Request.InputStream) : null;
+    }
 }

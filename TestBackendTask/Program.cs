@@ -35,6 +35,7 @@ static IHostBuilder CreateHostBuilder(string[] args)
                               
                               services.AddTransient<Endpoint, NonPrimitiveObjectEndpoint>(); //TODO: endpoint discovery?
                               services.AddTransient<Endpoint, PrimitiveObjectEndpoint>();
+                              services.AddTransient<Endpoint, PostEndpoint>();
                               
                               services.AddScoped<ILogger, Logger>(_ => new LoggerConfiguration()
                                                                          .WriteTo.Console()
