@@ -1,14 +1,17 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Core;
 using TestBackendTask;
+using TestBackendTask.Context;
 using TestBackendTask.Endpoints;
 using TestBackendTask.Endpoints.Abstractions;
 using TestBackendTask.Endpoints.Report;
 
 var host = CreateHostBuilder(args).Build();
+MigrateDatabase<ReportDbContext>(host.Services);
 host.Services.GetService<HttpServer>().Start();
 Console.ReadKey(); //TODO: fix server cancellation
 
@@ -31,6 +34,17 @@ static IHostBuilder CreateHostBuilder(string[] args)
                                   }
                                   httpSection.Bind(options);
                               });
+
+                              services.AddDbContext<ReportDbContext>(options =>
+                              {
+                                  //TODO: add pgsql
+                                  var preferDatabase = context.Configuration.GetSection("Database").GetValue<string>("Prefer");
+                                  if(preferDatabase.Equals("sqlite", StringComparison.InvariantCultureIgnoreCase))
+                                  {
+                                      var connectionString = context.Configuration.GetConnectionString("sqlite");
+                                      options.UseSqlite(connectionString);
+                                  }
+                              });
                               
                               services.AddSingleton<HttpServer>();
                               
@@ -46,4 +60,10 @@ static IHostBuilder CreateHostBuilder(string[] args)
                           });
 
     return hostBuilder;
+}
+
+static void MigrateDatabase<TContext>(IServiceProvider services) where TContext : DbContext
+{
+    var context = services.GetRequiredService<TContext>();
+    context.Database.Migrate();
 }
