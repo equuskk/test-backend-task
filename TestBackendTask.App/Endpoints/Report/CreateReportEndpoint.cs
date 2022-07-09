@@ -8,7 +8,7 @@ public class CreateReportEndpoint : Endpoint
 {
     private readonly ReportDbContext _dbContext;
 
-    public CreateReportEndpoint(ReportDbContext dbContext)
+    public CreateReportEndpoint(ReportDbContext dbContext, IJsonSerializer serializer) : base(serializer)
     {
         _dbContext = dbContext;
         Method = HttpMethod.Post.Method;

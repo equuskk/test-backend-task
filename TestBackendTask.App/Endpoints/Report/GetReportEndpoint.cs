@@ -14,7 +14,8 @@ public class GetReportEndpoint : Endpoint
     private readonly Random _random;
     private readonly ReportOptions _options;
 
-    public GetReportEndpoint(ReportDbContext dbContext, IOptions<ReportOptions> options, Random random)
+    public GetReportEndpoint(ReportDbContext dbContext, IOptions<ReportOptions> options, Random random,
+                             IJsonSerializer serializer) : base(serializer)
     {
         _dbContext = dbContext;
         _random = random;
@@ -37,7 +38,7 @@ public class GetReportEndpoint : Endpoint
                                .FirstOrDefaultAsync(x => x.Id == guid);
         if(entity is null)
         {
-            await Send(204, "entity not found");
+            await SendBadRequest("entity not found");
             return;
         }
 

@@ -62,6 +62,7 @@ static IHostBuilder CreateHostBuilder(string[] args)
 
                               services.AddSingleton<HttpServer>();
                               services.AddSingleton<Random>();
+                              services.AddSingleton<IJsonSerializer, SystemTextJsonSerializer>();
 
                               services.AddTransient<Endpoint, CreateReportEndpoint>();
                               services.AddTransient<Endpoint, GetReportEndpoint>();
