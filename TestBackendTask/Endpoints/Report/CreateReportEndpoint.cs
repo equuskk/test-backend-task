@@ -1,12 +1,16 @@
 ﻿using System.Net;
+using TestBackendTask.Context;
 using TestBackendTask.Endpoints.Abstractions;
 
 namespace TestBackendTask.Endpoints.Report;
 
 public class CreateReportEndpoint : Endpoint
 {
-    public CreateReportEndpoint()
+    private readonly ReportDbContext _dbContext;
+
+    public CreateReportEndpoint(ReportDbContext dbContext)
     {
+        _dbContext = dbContext;
         Method = HttpMethod.Post.Method;
         Path = "/report/user_statistics";
     }
@@ -19,7 +23,18 @@ public class CreateReportEndpoint : Endpoint
             SendBadRequest("Body is empty");
             return;
         }
-        SendOk(data.UserId);
+
+        var entity = new Context.Entities.Report
+        {
+            Id = Guid.NewGuid(),
+            FromDate = data.FromDate,
+            ToDate = data.ToDate,
+            UserId = data.UserId
+        };
+        _dbContext.Reports.Add(entity);
+        _dbContext.SaveChanges();
+
+        SendOk(entity.Id);
     }
 }
 
