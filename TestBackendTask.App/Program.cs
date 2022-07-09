@@ -5,8 +5,8 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Core;
 using TestBackendTask.App.Context;
-using TestBackendTask.App.Endpoints;
 using TestBackendTask.App.Endpoints.Report;
+using TestBackendTask.App.Options;
 using TestBackendTask.Server;
 using TestBackendTask.Server.Abstractions;
 
@@ -35,6 +35,19 @@ static IHostBuilder CreateHostBuilder(string[] args)
 
                                   httpSection.Bind(options);
                               });
+                              
+                              services.Configure<ReportOptions>(options =>
+                              {
+                                  var reportSection = context.Configuration.GetSection(ReportOptions.SectionName);
+                                  if(!reportSection.Exists())
+                                  {
+                                      options.Delay = 60;
+                                  }
+                                  else
+                                  {
+                                      reportSection.Bind(options);
+                                  }
+                              });
 
                               services.AddDbContext<ReportDbContext>(options =>
                               {
@@ -48,6 +61,7 @@ static IHostBuilder CreateHostBuilder(string[] args)
                               });
 
                               services.AddSingleton<HttpServer>();
+                              services.AddSingleton<Random>();
 
                               services.AddTransient<Endpoint, CreateReportEndpoint>();
                               services.AddTransient<Endpoint, GetReportEndpoint>();
