@@ -16,15 +16,17 @@ public class Endpoint : BaseEndpoint
             return;
         }
 
-        if(response.GetType().IsGenericType)
+        var responseType = response.GetType();
+        if(!responseType.IsPrimitive && !responseType.IsSealed) //TODO: proper type check?
         {
             var serializedObject = JsonSerializer.Serialize(response);
             var responseBytes = Encoding.UTF8.GetBytes(serializedObject);
-            _context.Response.AddHeader("Content-Type", MediaTypeNames.Application.Json);
+            _context.Response.ContentType = MediaTypeNames.Application.Json;
             _context.Response.OutputStream.Write(responseBytes);
         }
         else
         {
+            _context.Response.ContentType = MediaTypeNames.Text.Plain;
             _context.Response.OutputStream.Write(Encoding.UTF8.GetBytes(response.ToString()));
         }
 
