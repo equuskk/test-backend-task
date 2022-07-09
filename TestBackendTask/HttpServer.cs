@@ -42,12 +42,17 @@ public class HttpServer
         _listener.Stop();
     }
 
+    //TODO: cancellation token?
     private void Receive()
     {
-        _listener.BeginGetContext(ListenerCallback, _listener);
+        while(true)
+        {
+            var context = _listener.GetContext();
+            ListenerCallback(context);
+        }
     }
 
-    private void ListenerCallback(IAsyncResult result)
+    private void ListenerCallback(HttpListenerContext context)
     {
         if(!_listener.IsListening)
         {
@@ -57,8 +62,6 @@ public class HttpServer
         //TODO: think about it
         Task.Factory.StartNew(() =>
         {
-            var context = _listener.EndGetContext(result);
-
             //TODO: track request time
             _logger.Information("Request starting {HttpMethod} {HttpUrl}",
                                 context.Request.HttpMethod, context.Request.Url);
@@ -78,6 +81,5 @@ public class HttpServer
             _logger.Information("Request finished {HttpMethod} {HttpUrl} - {ResponseStatusCode}",
                                 context.Request.HttpMethod, context.Request.Url, context.Response.StatusCode);
         });
-        Receive();
     }
 }
