@@ -13,7 +13,6 @@ using TestBackendTask.Server.Abstractions;
 var host = CreateHostBuilder(args).Build();
 MigrateDatabase<ReportDbContext>(host.Services);
 host.Services.GetService<HttpServer>().Start();
-Console.ReadKey(); //TODO: fix server cancellation
 
 static IHostBuilder CreateHostBuilder(string[] args)
 {
@@ -51,7 +50,6 @@ static IHostBuilder CreateHostBuilder(string[] args)
 
                               services.AddDbContext<ReportDbContext>(options =>
                               {
-                                  //TODO: add pgsql
                                   var preferDatabase = context.Configuration.GetSection("Database").GetValue<string>("Prefer");
                                   if(preferDatabase.Equals("sqlite", StringComparison.InvariantCultureIgnoreCase))
                                   {

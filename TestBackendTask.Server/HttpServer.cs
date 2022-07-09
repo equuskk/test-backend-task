@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics;
+using System.Net;
 using Microsoft.Extensions.Options;
 using Serilog;
 using TestBackendTask.Server.Abstractions;
@@ -42,7 +43,6 @@ public class HttpServer
         _listener.Stop();
     }
 
-    //TODO: cancellation token?
     private void Receive()
     {
         while(true)
@@ -59,10 +59,10 @@ public class HttpServer
             return;
         }
 
-        //TODO: think about it
         Task.Factory.StartNew(() =>
         {
-            //TODO: track request time
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
             _logger.Information("Request starting {HttpMethod} {HttpUrl}",
                                 context.Request.HttpMethod, context.Request.Url);
 
@@ -78,8 +78,11 @@ public class HttpServer
                 selectedEndpoint.Execute(context);
             }
 
-            _logger.Information("Request finished {HttpMethod} {HttpUrl} - {ResponseStatusCode}",
-                                context.Request.HttpMethod, context.Request.Url, context.Response.StatusCode);
+            stopWatch.Stop();
+
+            _logger.Information("Request finished {HttpMethod} {HttpUrl} - {ResponseStatusCode}. Elapsed {ElapsedTime}ms",
+                                context.Request.HttpMethod, context.Request.Url,
+                                context.Response.StatusCode, stopWatch.ElapsedMilliseconds);
         });
     }
 }
