@@ -2,6 +2,7 @@
 using System.Net.Mime;
 using System.Text;
 using System.Text.Json;
+using JorgeSerrano.Json;
 
 namespace TestBackendTask.Endpoints.Abstractions;
 
@@ -19,7 +20,10 @@ public class Endpoint : BaseEndpoint
         var responseType = response.GetType();
         if(!responseType.IsPrimitive && !responseType.IsSealed) //TODO: proper type check?
         {
-            var serializedObject = JsonSerializer.Serialize(response);
+            var serializedObject = JsonSerializer.Serialize(response, new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = new JsonSnakeCaseNamingPolicy()
+            });
             var responseBytes = Encoding.UTF8.GetBytes(serializedObject);
             _context.Response.ContentType = MediaTypeNames.Application.Json;
             _context.Response.OutputStream.Write(responseBytes);

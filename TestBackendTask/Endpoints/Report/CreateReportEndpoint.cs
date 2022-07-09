@@ -3,9 +3,9 @@ using TestBackendTask.Endpoints.Abstractions;
 
 namespace TestBackendTask.Endpoints.Report;
 
-public class GetUserStatistics : Endpoint
+public class CreateReportEndpoint : Endpoint
 {
-    public GetUserStatistics()
+    public CreateReportEndpoint()
     {
         Method = HttpMethod.Post.Method;
         Path = "/report/user_statistics";

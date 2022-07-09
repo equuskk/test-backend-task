@@ -67,7 +67,7 @@ public class HttpServer
                                 context.Request.HttpMethod, context.Request.Url);
 
             var selectedEndpoint = _endpoints.FirstOrDefault(x => x.Method == context.Request.HttpMethod &&
-                                                                  x.Path == context.Request.RawUrl);
+                                                                  x.Path == context.Request.Url.AbsolutePath);
             if(selectedEndpoint is null)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
