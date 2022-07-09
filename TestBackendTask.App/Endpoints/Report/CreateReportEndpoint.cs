@@ -17,10 +17,16 @@ public class CreateReportEndpoint : Endpoint
 
     public override async Task Handle(HttpListenerRequest request)
     {
-        var data = GetDataFromBody<GetUserStatisticsRequest>();
+        var data = GetDataFromBody<CreateReportRequest>();
         if(data is null)
         {
             await SendBadRequest("Body is empty");
+            return;
+        }
+
+        if(!ValidateRequest(data, out var errors))
+        {
+            await SendBadRequest(errors);
             return;
         }
 
@@ -36,9 +42,25 @@ public class CreateReportEndpoint : Endpoint
 
         await SendOk(entity.Id);
     }
+
+    private bool ValidateRequest(CreateReportRequest req, out ICollection<string> errors)
+    {
+        errors = new List<string>();
+        if(req.UserId == Guid.Empty)
+        {
+            errors.Add("Invalid user id");
+        }
+
+        if(req.FromDate > req.ToDate)
+        {
+            errors.Add("FromDate must be great than ToDate");
+        }
+
+        return !errors.Any();
+    }
 }
 
-public class GetUserStatisticsRequest
+public class CreateReportRequest
 {
     public Guid UserId { get; set; }
     public DateTimeOffset FromDate { get; set; }
