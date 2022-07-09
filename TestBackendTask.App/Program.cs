@@ -49,9 +49,6 @@ static IHostBuilder CreateHostBuilder(string[] args)
 
                               services.AddSingleton<HttpServer>();
 
-                              services.AddTransient<Endpoint, NonPrimitiveObjectEndpoint>(); //TODO: endpoint discovery?
-                              services.AddTransient<Endpoint, PrimitiveObjectEndpoint>();
-                              services.AddTransient<Endpoint, PostEndpoint>();
                               services.AddTransient<Endpoint, CreateReportEndpoint>();
                               services.AddTransient<Endpoint, GetReportEndpoint>();
 
