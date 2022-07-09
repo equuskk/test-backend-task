@@ -14,6 +14,11 @@ public class GetUserStatistics : Endpoint
     public override void Handle(HttpListenerRequest request)
     {
         var data = GetDataFromBody<GetUserStatisticsRequest>();
+        if(data is null)
+        {
+            SendBadRequest("Body is empty");
+            return;
+        }
         SendOk(data.UserId);
     }
 }

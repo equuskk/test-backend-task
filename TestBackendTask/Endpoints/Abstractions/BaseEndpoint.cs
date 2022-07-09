@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using TestBackendTask.Endpoints.Responses;
 
 namespace TestBackendTask.Endpoints.Abstractions;
 
@@ -23,5 +24,19 @@ public abstract class BaseEndpoint
     public void SendOk(object? response)
     {
         Send(200, response);
+    }
+    
+    public void SendBadRequest(object? response)
+    {
+        Send(400, response);
+    }
+    
+    public void SendBadRequest(params string[] errors)
+    {
+        var response = new BadRequestResponse()
+        {
+            Errors = errors
+        };
+        Send(400, response);
     }
 }
