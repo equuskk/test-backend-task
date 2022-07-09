@@ -23,27 +23,27 @@ public class GetReportEndpoint : Endpoint
         Path = "/report/info";
     }
 
-    public override void Handle(HttpListenerRequest request)
+    public override async Task Handle(HttpListenerRequest request)
     {
         var id = _context.Request.QueryString.Get("id");
         if(string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out var guid))
         {
-            SendBadRequest("invalid guid");
+            await SendBadRequest("invalid guid");
             return;
         }
 
-        var entity = _dbContext.Reports
+        var entity = await _dbContext.Reports
                                .Include(x => x.Result)
-                               .FirstOrDefault(x => x.Id == guid);
+                               .FirstOrDefaultAsync(x => x.Id == guid);
         if(entity is null)
         {
-            Send(201, "entity not found");
+            await Send(204, "entity not found");
             return;
         }
 
         if(entity.Result is not null)
         {
-            SendOk(MapToResponse(entity));
+            await SendOk(MapToResponse(entity));
             return;
         }
 
@@ -51,7 +51,7 @@ public class GetReportEndpoint : Endpoint
         var percent = (int)((diffInSeconds / _options.Delay) * 100);
         if(percent < 100)
         {
-            SendOk(MapToResponse(entity, percent));
+            await SendOk(MapToResponse(entity, percent));
             return;
         }
 
@@ -59,8 +59,8 @@ public class GetReportEndpoint : Endpoint
         {
             CountSignIn = _random.Next(10, 200)
         };
-        _dbContext.SaveChanges();
-        SendOk(MapToResponse(entity));
+        await _dbContext.SaveChangesAsync();
+        await SendOk(MapToResponse(entity));
     }
 
     private GetReportResponse MapToResponse(Context.Entities.Report report, int percent = 100)

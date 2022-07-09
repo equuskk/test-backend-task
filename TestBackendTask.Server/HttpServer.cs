@@ -59,7 +59,7 @@ public class HttpServer
             return;
         }
 
-        Task.Factory.StartNew(() =>
+        Task.Factory.StartNew(async () =>
         {
             var stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -75,7 +75,18 @@ public class HttpServer
             }
             else
             {
-                selectedEndpoint.Execute(context);
+                try
+                {
+                    await selectedEndpoint.Execute(context);
+                }
+                catch(Exception)
+                {
+                    if(context.Response.StatusCode == 0)
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                        context.Response.Close();
+                    }
+                }
             }
 
             stopWatch.Stop();

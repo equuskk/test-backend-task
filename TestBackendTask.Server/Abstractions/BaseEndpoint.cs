@@ -10,33 +10,33 @@ public abstract class BaseEndpoint
 
     protected HttpListenerContext _context;
 
-    public void Execute(HttpListenerContext context)
+    public async Task Execute(HttpListenerContext context)
     {
         _context = context;
-        Handle(_context.Request);
+        await Handle(_context.Request);
     }
 
-    public abstract void Send(int statusCode, object? response);
-    public abstract void Handle(HttpListenerRequest request);
+    public abstract Task Send(int statusCode, object? response);
+    public abstract Task Handle(HttpListenerRequest request);
 
     public abstract T? GetDataFromBody<T>() where T : class;
 
-    public void SendOk(object? response)
+    public Task SendOk(object? response)
     {
-        Send(200, response);
+        return Send(200, response);
     }
 
-    public void SendBadRequest(object? response)
+    public Task SendBadRequest(object? response)
     {
-        Send(400, response);
+        return Send(400, response);
     }
 
-    public void SendBadRequest(params string[] errors)
+    public Task SendBadRequest(params string[] errors)
     {
         var response = new BadRequestResponse
         {
             Errors = errors
         };
-        Send(400, response);
+        return SendBadRequest(response);
     }
 }

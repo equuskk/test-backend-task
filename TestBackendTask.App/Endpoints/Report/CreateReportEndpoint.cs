@@ -15,12 +15,12 @@ public class CreateReportEndpoint : Endpoint
         Path = "/report/user_statistics";
     }
 
-    public override void Handle(HttpListenerRequest request)
+    public override async Task Handle(HttpListenerRequest request)
     {
         var data = GetDataFromBody<GetUserStatisticsRequest>();
         if(data is null)
         {
-            SendBadRequest("Body is empty");
+            await SendBadRequest("Body is empty");
             return;
         }
 
@@ -32,9 +32,9 @@ public class CreateReportEndpoint : Endpoint
             UserId = data.UserId
         };
         _dbContext.Reports.Add(entity);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
 
-        SendOk(entity.Id);
+        await SendOk(entity.Id);
     }
 }
 

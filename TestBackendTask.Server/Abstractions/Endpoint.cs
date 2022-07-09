@@ -8,7 +8,7 @@ namespace TestBackendTask.Server.Abstractions;
 
 public class Endpoint : BaseEndpoint
 {
-    public override void Send(int statusCode, object? response)
+    public override async Task Send(int statusCode, object? response)
     {
         _context.Response.StatusCode = statusCode;
         if(response is null)
@@ -26,18 +26,18 @@ public class Endpoint : BaseEndpoint
             });
             var responseBytes = Encoding.UTF8.GetBytes(serializedObject);
             _context.Response.ContentType = MediaTypeNames.Application.Json;
-            _context.Response.OutputStream.Write(responseBytes);
+            await _context.Response.OutputStream.WriteAsync(responseBytes);
         }
         else
         {
             _context.Response.ContentType = MediaTypeNames.Text.Plain;
-            _context.Response.OutputStream.Write(Encoding.UTF8.GetBytes(response.ToString()));
+            await _context.Response.OutputStream.WriteAsync(Encoding.UTF8.GetBytes(response.ToString()));
         }
 
         _context.Response.Close();
     }
 
-    public override void Handle(HttpListenerRequest request)
+    public override Task Handle(HttpListenerRequest request)
     {
         throw new NotImplementedException();
     }
@@ -53,9 +53,8 @@ public class Endpoint : BaseEndpoint
                            })
                            : null;
         }
-        catch(JsonException e)
+        catch(JsonException)
         {
-            //TODO: handle it
             return null;
         }
     }
