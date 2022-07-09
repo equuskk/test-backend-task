@@ -40,9 +40,17 @@ public class Endpoint : BaseEndpoint
 
     public override T? GetDataFromBody<T>() where T : class
     {
-        return _context.Request.HasEntityBody ? JsonSerializer.Deserialize<T>(_context.Request.InputStream, new JsonSerializerOptions()
+        try
         {
-            PropertyNameCaseInsensitive = true
-        }) : null;
+            return _context.Request.HasEntityBody ? JsonSerializer.Deserialize<T>(_context.Request.InputStream, new JsonSerializerOptions()
+            {
+                PropertyNameCaseInsensitive = true
+            }) : null;
+        }
+        catch(JsonException e)
+        {
+            //TODO: handle it
+            return null;
+        }
     }
 }
