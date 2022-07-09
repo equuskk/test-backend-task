@@ -26,17 +26,17 @@ public abstract class BaseEndpoint
         return Send(200, response);
     }
 
-    public Task SendBadRequest(object? response)
-    {
-        return Send(400, response);
-    }
-
-    public Task SendBadRequest(params string[] errors)
+    public Task SendBadRequest(IEnumerable<string> errors)
     {
         var response = new BadRequestResponse
         {
             Errors = errors
         };
-        return SendBadRequest(response);
+        return Send(400, response);
+    }
+
+    public Task SendBadRequest(params string[] errors)
+    {
+        return SendBadRequest(errors.AsEnumerable());
     }
 }
