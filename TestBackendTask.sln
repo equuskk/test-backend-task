@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBackendTask", "TestBackendTask\TestBackendTask.csproj", "{E11CCA0F-CA0E-49C3-B993-D324D5748D10}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBackendTask.App", "TestBackendTask.App\TestBackendTask.App.csproj", "{E11CCA0F-CA0E-49C3-B993-D324D5748D10}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBackendTask.Server", "TestBackendTask.Server\TestBackendTask.Server.csproj", "{8AA76D12-D4B6-4802-9691-0206EAF99E5C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +14,9 @@ Global
 		{E11CCA0F-CA0E-49C3-B993-D324D5748D10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E11CCA0F-CA0E-49C3-B993-D324D5748D10}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E11CCA0F-CA0E-49C3-B993-D324D5748D10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AA76D12-D4B6-4802-9691-0206EAF99E5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AA76D12-D4B6-4802-9691-0206EAF99E5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AA76D12-D4B6-4802-9691-0206EAF99E5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AA76D12-D4B6-4802-9691-0206EAF99E5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

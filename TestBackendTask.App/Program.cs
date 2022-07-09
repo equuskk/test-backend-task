@@ -4,11 +4,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Core;
-using TestBackendTask;
-using TestBackendTask.Context;
-using TestBackendTask.Endpoints;
-using TestBackendTask.Endpoints.Abstractions;
-using TestBackendTask.Endpoints.Report;
+using TestBackendTask.App.Context;
+using TestBackendTask.App.Endpoints;
+using TestBackendTask.App.Endpoints.Report;
+using TestBackendTask.Server;
+using TestBackendTask.Server.Abstractions;
 
 var host = CreateHostBuilder(args).Build();
 MigrateDatabase<ReportDbContext>(host.Services);
@@ -32,6 +32,7 @@ static IHostBuilder CreateHostBuilder(string[] args)
                                       throw new ArgumentNullException(nameof(httpSection),
                                                                       $"Add '{HttpOptions.SectionName}' section to setting");
                                   }
+
                                   httpSection.Bind(options);
                               });
 
@@ -45,18 +46,18 @@ static IHostBuilder CreateHostBuilder(string[] args)
                                       options.UseSqlite(connectionString);
                                   }
                               });
-                              
+
                               services.AddSingleton<HttpServer>();
-                              
+
                               services.AddTransient<Endpoint, NonPrimitiveObjectEndpoint>(); //TODO: endpoint discovery?
                               services.AddTransient<Endpoint, PrimitiveObjectEndpoint>();
                               services.AddTransient<Endpoint, PostEndpoint>();
                               services.AddTransient<Endpoint, CreateReportEndpoint>();
                               services.AddTransient<Endpoint, GetReportEndpoint>();
-                              
+
                               services.AddScoped<ILogger, Logger>(_ => new LoggerConfiguration()
-                                                                         .WriteTo.Console()
-                                                                         .CreateLogger());
+                                                                       .WriteTo.Console()
+                                                                       .CreateLogger());
                           });
 
     return hostBuilder;

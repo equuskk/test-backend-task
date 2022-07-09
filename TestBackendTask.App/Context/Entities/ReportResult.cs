@@ -1,4 +1,4 @@
-﻿namespace TestBackendTask.Context.Entities;
+﻿namespace TestBackendTask.App.Context.Entities;
 
 public class ReportResult
 {

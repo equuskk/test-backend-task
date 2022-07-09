@@ -4,7 +4,7 @@ using System.Text;
 using System.Text.Json;
 using JorgeSerrano.Json;
 
-namespace TestBackendTask.Endpoints.Abstractions;
+namespace TestBackendTask.Server.Abstractions;
 
 public class Endpoint : BaseEndpoint
 {
@@ -20,7 +20,7 @@ public class Endpoint : BaseEndpoint
         var responseType = response.GetType();
         if(!responseType.IsPrimitive && !responseType.IsSealed) //TODO: proper type check?
         {
-            var serializedObject = JsonSerializer.Serialize(response, new JsonSerializerOptions()
+            var serializedObject = JsonSerializer.Serialize(response, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = new JsonSnakeCaseNamingPolicy()
             });
@@ -46,10 +46,12 @@ public class Endpoint : BaseEndpoint
     {
         try
         {
-            return _context.Request.HasEntityBody ? JsonSerializer.Deserialize<T>(_context.Request.InputStream, new JsonSerializerOptions()
-            {
-                PropertyNameCaseInsensitive = true
-            }) : null;
+            return _context.Request.HasEntityBody
+                           ? JsonSerializer.Deserialize<T>(_context.Request.InputStream, new JsonSerializerOptions
+                           {
+                               PropertyNameCaseInsensitive = true
+                           })
+                           : null;
         }
         catch(JsonException e)
         {

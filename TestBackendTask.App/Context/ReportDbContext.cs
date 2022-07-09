@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TestBackendTask.Context.Entities;
+using TestBackendTask.App.Context.Entities;
 
-namespace TestBackendTask.Context;
+namespace TestBackendTask.App.Context;
 
 public class ReportDbContext : DbContext
 {
     public DbSet<Report> Reports { get; set; }
     public DbSet<ReportResult> ReportResults { get; set; }
+
     public ReportDbContext(DbContextOptions<ReportDbContext> options) : base(options)
     {
     }

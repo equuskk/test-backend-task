@@ -3,11 +3,11 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TestBackendTask.Context;
+using TestBackendTask.App.Context;
 
 #nullable disable
 
-namespace TestBackendTask.Migrations
+namespace TestBackendTask.App.Migrations
 {
     [DbContext(typeof(ReportDbContext))]
     partial class ReportDbContextModelSnapshot : ModelSnapshot
@@ -17,7 +17,7 @@ namespace TestBackendTask.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.6");
 
-            modelBuilder.Entity("TestBackendTask.Context.Entities.Report", b =>
+            modelBuilder.Entity("TestBackendTask.App.Context.Entities.Report", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -40,7 +40,7 @@ namespace TestBackendTask.Migrations
                     b.ToTable("Reports");
                 });
 
-            modelBuilder.Entity("TestBackendTask.Context.Entities.ReportResult", b =>
+            modelBuilder.Entity("TestBackendTask.App.Context.Entities.ReportResult", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -60,16 +60,16 @@ namespace TestBackendTask.Migrations
                     b.ToTable("ReportResults");
                 });
 
-            modelBuilder.Entity("TestBackendTask.Context.Entities.ReportResult", b =>
+            modelBuilder.Entity("TestBackendTask.App.Context.Entities.ReportResult", b =>
                 {
-                    b.HasOne("TestBackendTask.Context.Entities.Report", "Report")
+                    b.HasOne("TestBackendTask.App.Context.Entities.Report", "Report")
                         .WithOne("Result")
-                        .HasForeignKey("TestBackendTask.Context.Entities.ReportResult", "ReportId");
+                        .HasForeignKey("TestBackendTask.App.Context.Entities.ReportResult", "ReportId");
 
                     b.Navigation("Report");
                 });
 
-            modelBuilder.Entity("TestBackendTask.Context.Entities.Report", b =>
+            modelBuilder.Entity("TestBackendTask.App.Context.Entities.Report", b =>
                 {
                     b.Navigation("Result");
                 });

@@ -1,8 +1,8 @@
 ﻿using System.Net;
-using TestBackendTask.Context;
-using TestBackendTask.Endpoints.Abstractions;
+using TestBackendTask.App.Context;
+using TestBackendTask.Server.Abstractions;
 
-namespace TestBackendTask.Endpoints.Report;
+namespace TestBackendTask.App.Endpoints.Report;
 
 public class CreateReportEndpoint : Endpoint
 {

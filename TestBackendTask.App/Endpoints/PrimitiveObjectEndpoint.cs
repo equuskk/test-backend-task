@@ -1,7 +1,7 @@
 ﻿using System.Net;
-using TestBackendTask.Endpoints.Abstractions;
+using TestBackendTask.Server.Abstractions;
 
-namespace TestBackendTask.Endpoints;
+namespace TestBackendTask.App.Endpoints;
 
 public class PrimitiveObjectEndpoint : Endpoint
 {

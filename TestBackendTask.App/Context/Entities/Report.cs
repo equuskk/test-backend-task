@@ -1,8 +1,9 @@
-﻿namespace TestBackendTask.Context.Entities;
+﻿namespace TestBackendTask.App.Context.Entities;
 
 public class Report
 {
     public Guid Id { get; set; }
+
     // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
     public DateTimeOffset CreationDate { get; private set; }
 

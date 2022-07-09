@@ -1,9 +1,9 @@
 ﻿using System.Net;
 using Microsoft.Extensions.Options;
 using Serilog;
-using TestBackendTask.Endpoints.Abstractions;
+using TestBackendTask.Server.Abstractions;
 
-namespace TestBackendTask;
+namespace TestBackendTask.Server;
 
 public class HttpServer
 {

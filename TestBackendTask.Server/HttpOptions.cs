@@ -1,4 +1,4 @@
-﻿namespace TestBackendTask;
+﻿namespace TestBackendTask.Server;
 
 public class HttpOptions
 {

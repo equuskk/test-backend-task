@@ -1,4 +1,4 @@
-﻿namespace TestBackendTask.Endpoints.Responses;
+﻿namespace TestBackendTask.Server.Responses;
 
 public class BadRequestResponse
 {
