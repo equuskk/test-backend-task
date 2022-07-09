@@ -8,7 +8,7 @@ namespace TestBackendTask.Server;
 
 public class HttpServer
 {
-    private const string LocalhostServerUrl = "http://localhost:{0}/";
+    private const string LocalhostServerUrl = "http://{0}:{1}/";
 
     private readonly HttpListener _listener;
     private readonly HttpOptions _options;
@@ -31,7 +31,7 @@ public class HttpServer
 
     public void Start()
     {
-        var url = string.Format(LocalhostServerUrl, _options.Port);
+        var url = string.Format(LocalhostServerUrl, _options.Host, _options.Port);
         _listener.Prefixes.Add(url);
         _listener.Start();
         _logger.Information("Server started at {Url}", url);
