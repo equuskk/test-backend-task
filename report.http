@@ -1,0 +1,16 @@
+﻿### Send report creation request
+POST http://localhost:8080/report/user_statistics
+Content-Type: application/json
+
+{
+    "userId": "{{$uuid}}",
+    "fromDate": "2022-07-08T08:05:50.394877+00:00",
+    "toDate": "2022-07-10T08:05:51.394877+00:00"
+}
+
+> {%
+    client.global.set("report_guid", response.body);
+%}
+
+### Get report by guid
+GET http://localhost:8080/report/info?id={{report_guid}}
